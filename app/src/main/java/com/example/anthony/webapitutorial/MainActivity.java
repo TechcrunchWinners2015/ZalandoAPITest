@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.json.parsers.*;
 
@@ -37,13 +38,16 @@ public class MainActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.my_button).setOnClickListener(this);
+        new LongRunningGetIO().execute();
     }
 
     @Override
-        public void onClick(View arg0) {
+    public void onClick(View arg0) {
         Button b = (Button)findViewById(R.id.my_button);
         b.setClickable(false);
-        new LongRunningGetIO().execute();
+        b.setText("Help Requested");
+        NeximoFunctions neximoFunctions = new NeximoFunctions();
+        neximoFunctions.notifyAssociate("shoes");
     }
 
     private class LongRunningGetIO extends AsyncTask <Void, Void, String> {
@@ -85,8 +89,10 @@ public class MainActivity extends Activity implements OnClickListener {
         }
         protected void onPostExecute(String results) {
             if (results!=null) {
+                /*
                 EditText et = (EditText)findViewById(R.id.my_edit);
                 et.setText(results);
+                */
 
                 /* results is the HTTP response, send it through the JSON processor */
                 JsonParserFactory factory=JsonParserFactory.getInstance();
@@ -117,11 +123,20 @@ public class MainActivity extends Activity implements OnClickListener {
                     images[i] = (String) image_map.get("smallUrl");
 
                 }
+
+                TextView tv1 = (TextView)findViewById(R.id.title);
+                tv1.setText(titles[1]);
+
+                TextView tv2 = (TextView)findViewById(R.id.price);
+                tv2.setText(prices[1]);
+
+                /*
                 EditText et2 = (EditText)findViewById(R.id.title);
                 et2.setText(titles[0]);
 
                 EditText et3 = (EditText)findViewById(R.id.price);
                 et3.setText(prices[0]);
+                */
 
                 WebView myWebView = (WebView) findViewById(R.id.image);
                 myWebView.loadUrl(images[0]);
